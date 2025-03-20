@@ -46,7 +46,7 @@ export const fetchRevenuesData = async () => {
 
     } catch (error) {
         console.log("error =>", error);
-        throw new Error('Failed to fetch card data.');
+        throw new Error('Failed to fetch resultRevenues data.');
     }
 }
 
@@ -57,9 +57,22 @@ export const fetchLastestInvoices = async () => {
         const resultgetInvoices = await getInvoices.json()
 
         return resultgetInvoices;
-        
+
     } catch (error) {
         console.log("error =>", error);
-        throw new Error('Failed to fetch card data.');
+        throw new Error('Failed to fetch resultgetInvoices data.');
     }
+}
+
+export const fetchFilteredInvoices = async (query?: string, currentPage?: number) => {
+    try {
+        const getFilteredInvoices = await fetch(`${process.env.BACKEND_URL}/invoices/paginate`, { headers });
+        const resultFilteredInvoices = await getFilteredInvoices.json();
+
+        return resultFilteredInvoices;
+    } catch (error) {
+        console.log("error =>", error);
+        throw new Error('Failed to fetch resultFilteredInvoices data.');
+    }
+
 }
