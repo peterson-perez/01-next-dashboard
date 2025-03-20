@@ -36,9 +36,30 @@ export const fetchCardData = async () => {
     }
 }
 
-export const fetchRevenuesData = async () => {
-    const getRevenues = await fetch(`${process.env.BACKEND_URL}/revenues`, { headers });
 
-    const resultRevenues = await getRevenues.json()
-    return resultRevenues;
+export const fetchRevenuesData = async () => {
+    try {
+        const getRevenues = await fetch(`${process.env.BACKEND_URL}/revenues`, { headers });
+
+        const resultRevenues = await getRevenues.json()
+        return resultRevenues;
+
+    } catch (error) {
+        console.log("error =>", error);
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+
+export const fetchLastestInvoices = async () => {
+    try {
+        const getInvoices = await fetch(`${process.env.BACKEND_URL}/invoices`, { headers });
+        const resultgetInvoices = await getInvoices.json()
+
+        return resultgetInvoices;
+        
+    } catch (error) {
+        console.log("error =>", error);
+        throw new Error('Failed to fetch card data.');
+    }
 }

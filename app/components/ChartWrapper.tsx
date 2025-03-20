@@ -5,7 +5,7 @@ const ChartWrapper = async () => {
 
     const revenues = await fetchRevenuesData();
 
-    return <RevenueChart revenues={revenues} chartHeight={350} />;
+    return <RevenueChart revenues={revenues} chartHeight={350} className="bg-slate-700"/>;
 };
 
 export default ChartWrapper;

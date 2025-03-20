@@ -1,6 +1,7 @@
 import { bebas } from "../ui/fonts";
 import CardWrapper from "../components/CardWrapper";
 import ChartWrapper from "../components/ChartWrapper";
+import LatestInvoincesWrapper from "../components/LatestInvoincesWrapper";
 
 
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
                 </div>
                 <div className="w-full md:col-span-4">
                     <h2 className={`${bebas.className} mb-4 text-xl md:text-2xl`}>Lastest invoices</h2>
+                    <LatestInvoincesWrapper />
                 </div>
             </div>
         </main>
