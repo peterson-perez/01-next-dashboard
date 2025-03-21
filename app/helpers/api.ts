@@ -66,7 +66,7 @@ export const fetchLastestInvoices = async () => {
 
 export const fetchFilteredInvoices = async (query?: string, currentPage?: number) => {
     try {
-        const getFilteredInvoices = await fetch(`${process.env.BACKEND_URL}/invoices/paginate?q=${query}`, { headers });
+        const getFilteredInvoices = await fetch(`${process.env.BACKEND_URL}/invoices/paginate?q=${query}&page=${currentPage}`, { headers });
         const resultFilteredInvoices = await getFilteredInvoices.json();
 
         return resultFilteredInvoices;
@@ -75,4 +75,16 @@ export const fetchFilteredInvoices = async (query?: string, currentPage?: number
         throw new Error('Failed to fetch resultFilteredInvoices data.');
     }
 
+}
+
+export const fetchInvoicesPages = async (query: string) => {
+    try {
+        const getInvoicePages = await fetch(`${process.env.BACKEND_URL}/invoices/page-count?q=${query}`, { headers });
+        const resultGetInvoicePages = await getInvoicePages.json();
+
+        return resultGetInvoicePages;
+    } catch (error) {
+        console.log("error =>", error);
+        throw new Error('Failed to fetch resultGetInvoicePages data.');
+    }
 }
