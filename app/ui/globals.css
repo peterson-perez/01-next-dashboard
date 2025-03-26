@@ -1,3 +1,13 @@
 @import "tailwindcss";
 
 @config "../../tailwind.config.js";
+
+/* create page */
+
+.create-form input {
+    background-color: white;
+}
+
+.create-form select {
+    background-color: white;
+}
