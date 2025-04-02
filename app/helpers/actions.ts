@@ -20,7 +20,7 @@ const FormSchema = z.object({
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ date: true, id: true });
+const UpdateInvoice = FormSchema.omit({ date: true });
 
 export const createInvoice = async (prevState: CreateFormState, formData: FormData) => {
     // Validate form fields using Zod
@@ -49,7 +49,7 @@ export const createInvoice = async (prevState: CreateFormState, formData: FormDa
     }
 
     try {
-        await fetch("https://backend-next-tutorial-fay6a.ondigitalocean.app/api/v1/invoices", {
+        await fetch(`${process.env.BACKEND_URL}/invoices`, {
             headers: {
                 "Content-Type": 'application/json',
                 Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
@@ -61,6 +61,56 @@ export const createInvoice = async (prevState: CreateFormState, formData: FormDa
         console.log(error)
         return {
             message: 'Database Error: Failed to Create Invoice.',
+        };
+    }
+
+    revalidatePath('/dashboard/invoices');
+    redirect('/dashboard/invoices');
+}
+
+
+export const updateInvoice = async (prevState: CreateFormState, formData: FormData) => {
+
+
+    // Validate form fields using Zod
+    const validatedFields = UpdateInvoice.safeParse({
+        id: formData.get('invoiceId'),
+        customerId: formData.get('customerId'),
+        amount: formData.get('amount'),
+        status: formData.get('status'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Missing Fields. Failed to Update Invoice.',
+        };
+    }
+
+    const { customerId, amount, status, id } = validatedFields.data;
+    const amountInCents = amount * 100;
+
+    const body = {
+        status,
+        amount: amountInCents,
+        customer: customerId,
+    };
+
+    console.log(JSON.stringify(body))
+
+    try {
+        await fetch(`${process.env.BACKEND_URL}/invoices/${id}`, {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
+            },
+            method: "PUT",
+            body: JSON.stringify(body)
+        })
+    } catch (error) {
+        console.log(error)
+        return {
+            message: 'Database Error: Failed to Update Invoice.',
         };
     }
 
