@@ -117,3 +117,22 @@ export const updateInvoice = async (prevState: CreateFormState, formData: FormDa
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
+
+export const fetchDeleteInvoice = async (formData: FormData) => {
+    const id = formData.get('invoiceId')
+
+    try {
+        await fetch(`${process.env.BACKEND_URL}/invoices/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
+            },
+            method: "DELETE"
+        })
+        revalidatePath('/dashboard/invoices');
+    } catch (error) {
+        return {
+            message: "Database Error: Failed to Delete Invoice."
+        };
+    };
+};
