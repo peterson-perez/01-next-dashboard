@@ -104,6 +104,8 @@ export const fetchGetCostumers = async () => {
 export const fetchGetInvoiceById = async (id: string) => {
     try {
         const getInvoice = await fetch(`${process.env.BACKEND_URL}/invoice/${id}`, { headers })
+        if (getInvoice.status === 404) return null;
+        if (getInvoice.status !== 200) throw new Error("Error fetching invoice!!!");
         const resultGetInvoice = await getInvoice.json()
 
         return resultGetInvoice;

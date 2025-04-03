@@ -3,6 +3,7 @@ import { fetchGetCostumers, fetchGetInvoiceById } from "@/app/helpers/api";
 import { bebas } from "@/app/ui/fonts";
 import { Breadcrumbs } from "anjrot-components";
 import { FC } from "react";
+import notFound from "../../not-found";
 
 interface EditInvoiceProps {
     params: Promise<{ id: string }>
@@ -18,6 +19,10 @@ const EditInvoice: FC<EditInvoiceProps> = async ({ params }) => {
     ]
 
     const [getCostumer, getInvoice] = await Promise.all([fetchGetCostumers(), fetchGetInvoiceById(id)])
+
+    if(!getInvoice){
+        return notFound();
+    }
 
     return (
         <main>
