@@ -4,7 +4,11 @@ import ChartWrapper from "../../components/ChartWrapper";
 import LatestInvoincesWrapper from "../../components/LatestInvoincesWrapper";
 import { Suspense } from "react";
 import { CardsSkeleton, RevenueChartSkeleton, LatestInvoicesSkeleton } from "@/app/components/Skeleton";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+    title: "dashboard"
+};
 
 const Dashboard = () => {
 

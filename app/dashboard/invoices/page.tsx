@@ -5,12 +5,17 @@ import { InvoiceSkeleton } from "@/app/components/Skeleton";
 import { fetchInvoicesPages } from "@/app/helpers/api";
 import { bebas } from "@/app/ui/fonts";
 import { TableButtons } from "anjrot-components";
+import { Metadata } from "next";
 import Link from "next/link";
 import { FC, Suspense } from "react";
 
 interface InvocesProps {
     searchParams?: Promise<{ query?: string; page?: number }>;
 }
+
+export const metadata: Metadata = {
+    title: "Invoices"
+};
 
 const Invoices: FC<InvocesProps> = async ({ searchParams }) => {
     const params = await searchParams;
