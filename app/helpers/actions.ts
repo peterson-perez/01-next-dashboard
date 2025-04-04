@@ -1,6 +1,8 @@
 'use server'
 
+import { signIn } from "@/auth";
 import { CreateFormState } from "anjrot-components";
+import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -136,3 +138,19 @@ export const fetchDeleteInvoice = async (formData: FormData) => {
         };
     };
 };
+
+export const authenticate = async (state: string | undefined , formData: FormData) => {
+    try {
+        await signIn('credentials', formData);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return 'Invalid credentials.';
+                default:
+                    return 'Something went wrong';
+            }
+        }
+        throw error;
+    }
+}
