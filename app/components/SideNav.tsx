@@ -2,7 +2,7 @@ import { FaFileInvoice, FaHome, FaPowerOff, FaUsers } from "react-icons/fa";
 import { Logo } from "./Logo";
 import NavLinks from "./NavLinks";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut } from "@/auth";
 
 const SideNav = () => {
     return (
