@@ -39,7 +39,7 @@ const FormSchema = z.object({
     }),
     email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
     password: z.string().min(6, { message: 'Be at least 6 characters long' }).trim()
-    
+
     // the correct validations for the a password
     // password: z
     //     .string()
@@ -202,6 +202,7 @@ export const autenticate = async (state: FormState, formData: FormData) => {
                     }
             }
         }
+        throw error
     }
 
 }
