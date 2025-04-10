@@ -1,11 +1,13 @@
 'use server'
 
-import { signIn } from "@/auth";
+import { auth, handlers, signIn } from "@/auth";
 import { CreateFormState } from "anjrot-components";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { CreateStateForm } from "../components/RegisterFormWrapper";
+import { FormState } from "../components/LoginWrapper";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -19,10 +21,41 @@ const FormSchema = z.object({
         invalid_type_error: 'Please select an invoice status.',
     }),
     date: z.string(),
+    name: z.string({
+        required_error: "Name is required",
+        invalid_type_error: "Name must be a string",
+    }).min(6, {
+        message: "Name Must be 6 or more characters long"
+    }).refine(name => name.trim(), {
+        message: "Name must not start or finish with spaces"
+    }),
+    username: z.string({
+        required_error: "Username is required",
+        invalid_type_error: "Username must be a string",
+    }).min(6, {
+        message: "Username be 6 or more characters long"
+    }).refine(name => name.trim(), {
+        message: "Username must not start or finish with spaces"
+    }),
+    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+    password: z.string().min(6, { message: 'Be at least 6 characters long' }).trim()
+    
+    // the correct validations for the a password
+    // password: z
+    //     .string()
+    //     .min(8, { message: 'Be at least 8 characters long' })
+    //     .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
+    //     .regex(/[0-9]/, { message: 'Contain at least one number.' })
+    //     .regex(/[^a-zA-Z0-9]/, {
+    //         message: 'Contain at least one special character.',
+    //     })
+    //     .trim(),
 });
 
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ date: true });
+const CreateInvoice = FormSchema.omit({ id: true, date: true, username: true, name: true, email: true, password: true });
+const UpdateInvoice = FormSchema.omit({ date: true, username: true, name: true, email: true, password: true });
+const registerschema = FormSchema.omit({ id: true, customerId: true, amount: true, status: true, date: true })
+const loginschema = FormSchema.omit({ id: true, customerId: true, amount: true, status: true, date: true, name: true, username: true, })
 
 export const createInvoice = async (prevState: CreateFormState, formData: FormData) => {
     // Validate form fields using Zod
@@ -139,18 +172,75 @@ export const fetchDeleteInvoice = async (formData: FormData) => {
     };
 };
 
-export const authenticate = async (state: string | undefined , formData: FormData) => {
+export const autenticate = async (state: FormState, formData: FormData) => {
+    const validatedFields = loginschema.safeParse({
+        email: formData.get('email'),
+        password: formData.get('password'),
+    })
+    const message: string = ""
+
+    if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors)
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Invalid credentials"
+        }
+    }
+
     try {
-        await signIn('credentials', formData);
+        await signIn("credentials", formData)
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {
-                case 'CredentialsSignin':
-                    return 'Invalid credentials.';
+                case "CredentialsSignin":
+                    return {
+                        message: "Invalid credentials"
+                    };
                 default:
-                    return 'Something went wrong';
+                    return {
+                        message: "Something went wrong"
+                    }
             }
         }
-        throw error;
     }
+
+}
+
+export const register = async (preveState: CreateStateForm, formData: FormData) => {
+
+    const validatedFields = registerschema.safeParse({
+        name: formData.get('name'),
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password')
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Fail validation"
+        }
+    } else {
+        const { name, username, email, password } = validatedFields.data;
+
+        console.log('validacion :>>', validatedFields);
+
+        const body = {
+            name,
+            username,
+            email,
+            password
+        };
+
+
+        await fetch(`${process.env.BACKEND_URL}/auth/register`, {
+            headers: {
+                "Content-Type": "Application/json"
+            },
+            method: "POST",
+            body: JSON.stringify(body)
+        })
+    };
+
+    redirect("/login");
 }
