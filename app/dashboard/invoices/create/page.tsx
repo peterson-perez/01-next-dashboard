@@ -1,14 +1,7 @@
 import { fetchGetCostumers } from "@/app/helpers/api";
-import { bebas } from "@/app/ui/fonts";
-import { Breadcrumbs, CreateForm } from "anjrot-components";
-import Link from "next/link";
 import '../../../ui/globals.css'
 import FormWrapper from "@/app/components/FormWrapper";
-
-const breacrumbs = [
-    { label: "Invoices", href: "/dashboard/invoices" },
-    { label: "Create Invoice", href: "/dashboard/invoices/create", active: true }
-]
+import BreadcumbsWrapper from "@/app/components/BreadcumbsWrapper";
 
 const Createinvoices = async () => {
 
@@ -16,7 +9,7 @@ const Createinvoices = async () => {
 
     return (
         <main>
-            <Breadcrumbs breadcrumb={breacrumbs} className={bebas.className} />
+            <BreadcumbsWrapper label="Create Invoice" href="/invoices/create"/>
             <FormWrapper customers={getCustomers} /> 
         </main>
     );
