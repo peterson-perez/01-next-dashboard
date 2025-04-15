@@ -5,7 +5,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       authorize: async credentials => {
-        console.log("credentials: >>", credentials)
 
         const { email, password } = credentials;
 
@@ -36,5 +35,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
     })
-  ]
+  ],
+  callbacks: {
+    jwt: async ({ user, token, trigger }) => {
+      if (trigger === "signIn" && user) {
+        token.id = user.id;
+        token.token = user.token;
+      }
+
+      return token
+    },
+    session: ({ token, session }) => {
+      session.user.id = token.id as string;
+      session.user.token = token.token as string;
+      return session;
+    }
+  }
 })
