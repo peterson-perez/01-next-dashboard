@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { CreateStateForm } from "../components/RegisterFormWrapper";
 import { FormState } from "../components/LoginWrapper";
+import { authHeaders } from "./utils";
 
 const FormSchema = z.object({
     id: z.string(),
@@ -58,6 +59,7 @@ const registerschema = FormSchema.omit({ id: true, customerId: true, amount: tru
 const loginschema = FormSchema.omit({ id: true, customerId: true, amount: true, status: true, date: true, name: true, username: true, })
 
 export const createInvoice = async (prevState: CreateFormState, formData: FormData) => {
+    const session = await auth()
     // Validate form fields using Zod
     const validatedFields = CreateInvoice.safeParse({
         customerId: formData.get('customerId'),
@@ -85,17 +87,13 @@ export const createInvoice = async (prevState: CreateFormState, formData: FormDa
 
     try {
         await fetch(`${process.env.BACKEND_URL}/invoices`, {
-            headers: {
-                "Content-Type": 'application/json',
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
-            },
+            headers: authHeaders(session?.user?.token),
             method: "POST",
             body: JSON.stringify(body)
         })
     } catch (error) {
-        console.log(error)
         return {
-            message: 'Database Error: Failed to Create Invoice.',
+            message: 'Database Error: Failed to Create Invoice.' + error,
         };
     }
 
@@ -105,7 +103,7 @@ export const createInvoice = async (prevState: CreateFormState, formData: FormDa
 
 
 export const updateInvoice = async (prevState: CreateFormState, formData: FormData) => {
-
+    const session = await auth()
 
     // Validate form fields using Zod
     const validatedFields = UpdateInvoice.safeParse({
@@ -131,21 +129,15 @@ export const updateInvoice = async (prevState: CreateFormState, formData: FormDa
         customer: customerId,
     };
 
-    console.log(JSON.stringify(body))
-
     try {
         await fetch(`${process.env.BACKEND_URL}/invoices/${id}`, {
-            headers: {
-                "Content-Type": 'application/json',
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
-            },
+            headers: authHeaders(session?.user?.token),
             method: "PUT",
             body: JSON.stringify(body)
         })
     } catch (error) {
-        console.log(error)
         return {
-            message: 'Database Error: Failed to Update Invoice.',
+            message: 'Database Error: Failed to Update Invoice.' + error,
         };
     }
 
@@ -154,14 +146,12 @@ export const updateInvoice = async (prevState: CreateFormState, formData: FormDa
 }
 
 export const fetchDeleteInvoice = async (formData: FormData) => {
+    const session = await auth()
     const id = formData.get('invoiceId')
 
     try {
         await fetch(`${process.env.BACKEND_URL}/invoices/${id}`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZGIwODA4NjFjYzI2MzJhOWQwMWEyYSIsImVtYWlsIjoicGV0ZXJzb25AZ21haWwuY29tIiwibmFtZSI6InBldGVyc29uIiwiaWF0IjoxNzQyNDA3OTcxfQ.2knw9WMl0J0g_ZQQWDTyznl2FBAfgAN5AsaGsweilNw"
-            },
+            headers: authHeaders(session?.user?.token) ,
             method: "DELETE"
         })
         revalidatePath('/dashboard/invoices');
@@ -180,7 +170,6 @@ export const autenticate = async (state: FormState, formData: FormData) => {
     const message: string = ""
 
     if (!validatedFields.success) {
-        console.log(validatedFields.error.flatten().fieldErrors)
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: "Invalid credentials"
@@ -223,8 +212,6 @@ export const register = async (preveState: CreateStateForm, formData: FormData) 
         }
     } else {
         const { name, username, email, password } = validatedFields.data;
-
-        console.log('validacion :>>', validatedFields);
 
         const body = {
             name,
