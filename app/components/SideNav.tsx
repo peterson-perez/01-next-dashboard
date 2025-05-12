@@ -1,4 +1,4 @@
-import { FaFileInvoice, FaHome, FaPowerOff, FaUsers } from "react-icons/fa";
+import { FaPowerOff } from "react-icons/fa";
 import { Logo } from "./Logo";
 import NavLinks from "./NavLinks";
 import Link from "next/link";

@@ -1,7 +1,5 @@
 import FormEditWrapper from "@/app/components/FormEditWrapper";
 import { fetchGetCostumers, fetchGetInvoiceById } from "@/app/helpers/api";
-import { bebas } from "@/app/ui/fonts";
-import { Breadcrumbs } from "anjrot-components";
 import { FC } from "react";
 import notFound from "../../not-found";
 import BreadcumbsWrapper from "@/app/components/BreadcumbsWrapper";
@@ -22,7 +20,7 @@ const EditInvoice: FC<EditInvoiceProps> = async ({ params }) => {
 
     return (
         <main>
-            <BreadcumbsWrapper label="EDIT INVOICE" href={`/invoices/${id}/edit`}/>
+            <BreadcumbsWrapper label="Edit Invoice" href={`/invoices/${id}/edit`}/>
             <FormEditWrapper customers={getCostumer} invoice={getInvoice} />
         </main>
     );

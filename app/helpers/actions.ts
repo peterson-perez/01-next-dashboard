@@ -1,6 +1,6 @@
 'use server'
 
-import { auth, handlers, signIn } from "@/auth";
+import { auth, signIn } from "@/auth";
 import { CreateFormState } from "anjrot-components";
 import { AuthError } from "next-auth";
 import { revalidatePath } from "next/cache";
@@ -157,7 +157,7 @@ export const fetchDeleteInvoice = async (formData: FormData) => {
         revalidatePath('/dashboard/invoices');
     } catch (error) {
         return {
-            message: "Database Error: Failed to Delete Invoice."
+            message: "Database Error: Failed to Delete Invoice." + error
         };
     };
 };
@@ -167,7 +167,6 @@ export const autenticate = async (state: FormState, formData: FormData) => {
         email: formData.get('email'),
         password: formData.get('password'),
     })
-    const message: string = ""
 
     if (!validatedFields.success) {
         return {

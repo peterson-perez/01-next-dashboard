@@ -1,5 +1,6 @@
 import { BsArrowRight } from "react-icons/bs"
 import { bebas } from "../ui/fonts"
+import Image from "next/image";
 
 export const Hero = () => {
     return (
@@ -16,10 +17,9 @@ export const Hero = () => {
                     <span>loging</span> <BsArrowRight />
                 </a>
             </div>
-            <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28
-                                md:py-12">
-                <img src="/hero-desktop.png" alt="screenshots of the dashboard" width={1000} height={700} className="hidden md:block" />
-                <img src="/hero-mobile.png" alt="screenshots of the dashboard mobile" width={560} height={620} className="block md:hidden" />
+            <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
+                <Image src="/hero-desktop.png" alt="screenshots of the dashboard" width={1000} height={700} className="hidden md:block" />
+                <Image src="/hero-mobile.png" alt="screenshots of the dashboard mobile" width={560} height={620} className="block md:hidden" />
             </div>
         </div>
     );

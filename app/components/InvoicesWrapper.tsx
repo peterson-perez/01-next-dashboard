@@ -1,5 +1,5 @@
 import { InvoiceTable } from "anjrot-components";
-import { fetchFilteredInvoices, fetchInvoicesPages } from "../helpers/api";
+import { fetchFilteredInvoices } from "../helpers/api";
 import Image from "next/image";
 import { FC } from "react";
 import { fetchDeleteInvoice } from "../helpers/actions";

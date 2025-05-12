@@ -1,6 +1,5 @@
 'use client'
 
-import { LoginForm } from "anjrot-components";
 import Link from "next/link";
 import { autenticate } from "../helpers/actions";
 import { useActionState } from "react";
@@ -80,7 +79,7 @@ const LoginWrapper = () => {
                         </div>
                     )}
 
-                    <p className="mt-3">Don't have an account yet? <Link className="text-blue-500" href={'/register'}>Register</Link></p>
+                    <p className="mt-3">Dont have an account yet? <Link className="text-blue-500" href={'/register'}>Register</Link></p>
                 </div>
             </form>
         </>

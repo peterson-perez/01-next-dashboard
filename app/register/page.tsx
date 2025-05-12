@@ -1,5 +1,4 @@
 import RegisterFormWrapper from "@/app/components/RegisterFormWrapper";
-import { Logo } from "../components/Logo";
 
 const Register = () => {
     return (
